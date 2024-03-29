@@ -1,0 +1,159 @@
+FastAPI is a python web-framework
+Keeps everything simple and easy to scale
+Fast - Performance, faster than other options, comes with data validation and documentation
+Fast - It is very easy to develop with, prevents reinventing the wheel. Easy to deploy and has good community
+
+Key notes:
+allows you to develop your own APIs with less bugs due to data validation
+easy to learn and develop as its built with consideration to developers
+robust
+it has development standards, matches json schema and means api standards
+
+https://fastapi.tiangolo.com/
+
+application architechture
+
+Web Page <--> Rest API for data transfer <--> Server, FastAPI
+handles logic and renders webpage
+
+example use of FastAPI:
+netflix
+uber
+microsoft
+
+libraries
+pip install bcrypt==4.0.1, cryptography, fastapi, psycopg2-binary, PyMySQL, python-jose, python-multipart, SQLAlchemy, uvicorn, passlib
+
+fast api has has their own equilavent of crud operations
+
+CRUD              HTTP Request Methods
+Create            POST
+Read              GET
+Update            PUT
+Delete            DELETE
+
+async is not needed for FastAPI, as FastAPI automatically treats it as an async function regardless but it is beneficial to be explicit
+
+uvicorn being used is the web server that is used to start the FastAPI application
+
+items addressed by @ is a decorative
+
+swagger is a interactive ui that helps display fast api requests in a more user friendly manner
+http://127.0.0.1:8000/docs
+
+uvicorn FastAPI.udemy_course.own_code.books:app --reload
+this runs the FastAPI app, the --reload automatically reloads the site everytime a save is changed, and with VSCode it is automatically saved so it updates as you tab out to view the site
+
+
+
+path paameters are request aparamets that are attached to the url
+defined as a way to find information, based on the url
+
+you can make dynammic paths
+
+order matters with path params
+have static/ smaller and faster apis first, so they load in order
+
+for urls, if they have " " <space>, substitute it with "%20"
+
+you can go to:
+http://127.0.0.1:8000/books/title%20one
+directly, but swagger makes it easier to view and understand
+
+
+query parameters are request parameters that have been attatched after a "?"
+query params have a name=value pairs
+
+http://127.0.0.1:8000/books/?category=science
+it acts as a filter almost
+
+query parameters can be used with path parameters, especially when trying to figure out additional information
+
+
+
+POST requests are used to create data. youre posting data to the system
+POST can have additional info that GET does not have within
+POST can take in an aidditional parameter body that GET cannot
+
+what does = mean when passing parameters into a function?
+it will assign a defualt value to the parameter being passed through, i.e:
+
+async def create_book(new_book=Body()):
+    ...
+    ...
+    ...
+    return ...
+
+if there isnt new_book being passed into the function it will be taken as Body() automatically, as a defualt value
+
+
+PUT requests are CRUD updates
+can have additional information like a POST that GET may not have
+
+DELETE method, is the CRUD DELETE
+used to delete data
+if you have request, you can attatch path param, i.e. book param and delete that entry
+
+
+what is a path parameter:
+variables that are a part of the API's url
+
+query parameters are used to sort and filter through data that is not marked by a path parameter
+
+
+for path parameters, /books/author/{author} means we are passing a dynamic author paramter, which is contained within author, which is contained within books
+path is for specific parameter/value you are after, i.e. id or title of a game
+
+
+query parameters are used for when you know one aspect of the search you want to do, i.e. if you want to search for the authors within the science category of books
+query params are used to provide additional context to a serach
+query is for broader searches, such as genres, ratings, 'queries' with multiple outputs
+
+
+Pydantic v1 versus Pydantic v2:
+
+.dict() [function] .model_dump()
+schema_extra [function in Config class] json_schema_extra
+Optional variables require to be assinged None, i.e.        id = optional[int] = None
+
+
+What is Pydantics?
+
+Python lib that is used for data modelling, data parsing and efficient error handling
+Used commonly as a tool for data validation and handling for FastAPI application
+
+
+Path data validation example:
+async def delete_book(book_id: int = Path(gt=0)):
+
+query data validation example
+async def read_book_by_rating(book_rating: int = Query(gt=0, lt=6))
+
+
+What are status codes?
+
+Http status code is used to help client and system to understand what is happening server side
+they are based on an international standard on how a client/server should handle requests
+
+allows users that sent a request to know if its successful or not
+
+1XX information responses, request is being processed
+2XX the successful requests
+3XX redirection codes meaning more actions needed
+4XX client based errors
+5XX server based errors
+
+200: ok --> standard success response to get requests
+201: created --> request to create is successful used with posts
+204: no content --> successful but did not create an entity or return anything, mainly for put requests
+
+400: bad request --> cannot process request due to invalid client request
+401: unauthorised --> client does not have the correct authentication for the target resource
+404: not found --> the client requested a resource that cannot be found
+422: unprocessable entity --> semantic errors in client request
+
+500: internal server error --> unexpected issue on server side, random break 
+
+@app.delete("/books/book_id/{book_id}", status_code = status.HTTP_204_NO_CONTENT)
+returns 204 success code in the endpoint using Starlette
+
